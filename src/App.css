@@ -65,6 +65,10 @@ body {
   font-size: 1rem;
 }
 
+.search-input {
+  margin-bottom: 8px;
+}
+
 @media (max-width: 768px) {
   .app {
     padding: 16px;
