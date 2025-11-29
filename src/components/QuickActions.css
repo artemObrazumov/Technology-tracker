@@ -1,0 +1,68 @@
+.quick-actions {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.quick-actions__title {
+  margin: 0 0 16px 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.quick-actions__buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.quick-action-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.quick-action-btn--complete {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.quick-action-btn--reset {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+}
+
+.quick-action-btn--random {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+}
+
+.quick-action-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .quick-actions__buttons {
+    flex-direction: column;
+  }
+  
+  .quick-action-btn {
+    justify-content: center;
+  }
+}

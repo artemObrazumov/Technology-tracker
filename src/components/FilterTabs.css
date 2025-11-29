@@ -1,0 +1,92 @@
+.filter-tabs {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.filter-tabs__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.filter-tabs__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.filter-tabs__count {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.filter-tabs__list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-tab {
+  padding: 10px 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #004f8c;
+}
+
+.filter-tab:hover {
+  border-color: #3b82f6;
+  transform: translateY(-1px);
+}
+
+.filter-tab--active {
+  border-color: #3b82f6;
+  background: #3b82f6;
+  color: white;
+}
+
+.filter-tab--active .filter-tab__count {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-tab__count {
+  padding: 2px 8px;
+  background: #f3f4f6;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.filter-tab--active .filter-tab__count {
+  color: white;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .filter-tabs__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .filter-tabs__list {
+    flex-direction: column;
+  }
+  
+  .filter-tab {
+    justify-content: space-between;
+  }
+}
