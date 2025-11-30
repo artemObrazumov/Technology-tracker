@@ -53,8 +53,22 @@
   color: white;
 }
 
+.quick-action-btn--export {
+  background: linear-gradient(135deg, #17b898, #4d8d00);
+  color: white;
+}
+
 .quick-action-btn:active {
   transform: translateY(0);
+}
+
+.export-modal-content {
+  text-align: center;
+}
+
+.export-modal-content p {
+  margin-bottom: 16px;
+  font-size: 1rem;
 }
 
 @media (max-width: 768px) {

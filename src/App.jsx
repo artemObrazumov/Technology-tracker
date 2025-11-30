@@ -1,96 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
 import TechnologyCard from "./components/TechnologyCard";
 import ProgressHeader from "./components/ProgressHeader";
 import QuickActions from "./components/QuickActions";
 import FilterTabs from "./components/FilterTabs";
+import ProgressBar from "./components/ProgressBar";
+import useTechnologies from "./hooks/useTechnologies";
 
 function App() {
-  const [technologies, setTechnologies] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  const setTechnologiesMocks = () => {
-    setTechnologies([
-      {
-        id: 1,
-        title: "React Components",
-        description: "Изучение базовых компонентов и их жизненного цикла",
-        status: "completed",
-        notes: "",
-      },
-      {
-        id: 2,
-        title: "JSX Syntax",
-        description: "Освоение синтаксиса JSX и правил написания",
-        status: "in-progress",
-        notes: "",
-      },
-      {
-        id: 3,
-        title: "State Management",
-        description: "Работа с состоянием компонентов через useState",
-        status: "not-started",
-        notes: "",
-      },
-    ]);
-  };
-
-  // Загрузка данных
-  useEffect(() => {
-    const saved = localStorage.getItem("techTrackerData");
-    if (saved) {
-      setTechnologies(JSON.parse(saved));
-      console.log("Данные загружены из localStorage");
-    } else {
-      setTechnologiesMocks();
-    }
-    setIsLoaded(true);
-  }, []);
-
-  // Автосохранение
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem("techTrackerData", JSON.stringify(technologies));
-      console.log("Данные сохранены в localStorage");
-    }
-  }, [technologies]);
+  const { 
+    technologies, 
+    updateStatus, 
+    updateNotes, 
+    markAllAsCompleted, 
+    resetAllStatuses, 
+    progress 
+  } = useTechnologies();
 
   const [activeFilter, setActiveFilter] = useState("all");
-
-  const updateTechnologyStatus = (id) => {
-    setTechnologies((prevTech) =>
-      prevTech.map((tech) => {
-        if (tech.id === id) {
-          let nextStatus = "not-started";
-          switch (tech.status) {
-            case "not-started":
-              nextStatus = "in-progress";
-              break;
-            case "in-progress":
-              nextStatus = "completed";
-              break;
-            case "completed":
-              nextStatus = "not-started";
-              break;
-          }
-          return { ...tech, status: nextStatus };
-        }
-        return tech;
-      })
-    );
-  };
-
-  const markAllAsCompleted = () => {
-    setTechnologies((prevTech) =>
-      prevTech.map((tech) => ({ ...tech, status: "completed" }))
-    );
-  };
-
-  const resetAllStatuses = () => {
-    setTechnologies((prevTech) =>
-      prevTech.map((tech) => ({ ...tech, status: "not-started" }))
-    );
-  };
 
   const pickRandomTechnology = () => {
     const notStartedTechnologies = technologies.filter(
@@ -103,15 +30,7 @@ function App() {
       notStartedTechnologies[
         Math.floor(Math.random() * notStartedTechnologies.length)
       ];
-    updateTechnologyStatus(randomTechnology.id);
-  };
-
-  const updateTechnologyNotes = (techId, newNotes) => {
-    setTechnologies((prevTech) =>
-      prevTech.map((tech) =>
-        tech.id === techId ? { ...tech, notes: newNotes } : tech
-      )
-    );
+    updateStatus(randomTechnology.id);
   };
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -132,10 +51,13 @@ function App() {
       <div className="app-container">
         <ProgressHeader technologies={technologies} />
 
+        <ProgressBar progress={progress}/>
+
         <QuickActions
           onMarkAllCompleted={markAllAsCompleted}
           onResetAll={resetAllStatuses}
           onPickRandom={pickRandomTechnology}
+          technologies={technologies}
         />
 
         <div className="search-box">
@@ -165,9 +87,9 @@ function App() {
               title={technology.title}
               description={technology.description}
               status={technology.status}
-              onStatusChange={updateTechnologyStatus}
+              onStatusChange={updateStatus}
               notes={technology.notes}
-              onNotesChange={updateTechnologyNotes}
+              onNotesChange={updateNotes}
             />
           ))}
         </div>

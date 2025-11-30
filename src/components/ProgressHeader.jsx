@@ -10,12 +10,6 @@ const ProgressHeader = ({ technologies }) => {
     ? Math.round((completedTechnologies / totalTechnologies) * 100) 
     : 0;
 
-  const getProgressColor = () => {
-    if (progressPercentage >= 80) return '#0dcd8dff';
-    if (progressPercentage >= 50) return '#e49917ff';
-    return '#f42a2aff';
-  };
-
   return (
     <div className="progress-header">
       <div className="progress-header__stats">
@@ -30,22 +24,6 @@ const ProgressHeader = ({ technologies }) => {
         <div className="progress-stat progress-stat--not-started">
           <span className="progress-stat__value">{notStartedTechnologies}</span>
           <span className="progress-stat__label">Не начато</span>
-        </div>
-      </div>
-      
-      <div className="progress-bar">
-        <div className="progress-bar__info">
-          <span>Общий прогресс</span>
-          <span>{progressPercentage}%</span>
-        </div>
-        <div className="progress-bar__track">
-          <div 
-            className="progress-bar__fill"
-            style={{
-              width: `${progressPercentage}%`,
-              backgroundColor: getProgressColor()
-            }}
-          ></div>
         </div>
       </div>
     </div>
