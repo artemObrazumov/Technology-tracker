@@ -1,0 +1,66 @@
+body.dark-theme {
+  background: #1b001f;
+  --bg-primary: #600063;
+}
+
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme h5,
+body.dark-theme h6,
+body.dark-theme .nav-menu li a,
+body.dark-theme .theme-text,
+body.dark-theme .progress-stat__value,
+body.dark-theme .progress-stat__label,
+body.dark-theme .progress-percentage,
+body.dark-theme label,
+body.dark-theme .filter-tab__label,
+body.dark-theme .technology-card__description,
+body.dark-theme .logout-btn {
+  color: #fff;
+}
+
+body.dark-theme .main-navigation, 
+body.dark-theme .settings-container, 
+body.dark-theme .feature-card,
+body.dark-theme .progress-header, 
+body.dark-theme .progress-stat,
+body.dark-theme .technology-form,
+body.dark-theme .progress-bar-outer,
+body.dark-theme .quick-actions,
+body.dark-theme .search-box,
+body.dark-theme .filter-tabs,
+body.dark-theme .notes-section {
+  background: #600063;
+}
+
+body.dark-theme textarea,
+body.dark-theme input[type="text"],
+body.dark-theme select {
+    background: #170063;
+    color: #fff;
+}
+
+body.dark-theme button {
+    background: #003c82;
+}
+
+body.dark-theme button:hover {
+    background: #003c82;
+}
+
+body.dark-theme .technology-card--completed {
+  border-color: #10b981;
+  background: #014500;
+}
+
+body.dark-theme .technology-card--in-progress {
+  border-color: #f59e0b;
+  background: #5c2200;
+}
+
+body.dark-theme .technology-card--not-started {
+  border-color: #6b7280;
+  background: #3c3c3c;
+}

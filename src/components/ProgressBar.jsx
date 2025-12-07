@@ -13,7 +13,6 @@ function ProgressBar({ progress }) {
         className="progress-bar-outer"
         style={{
           height: `20px`,
-          backgroundColor: '#f0f0f0',
           borderRadius: '10px',
           overflow: 'hidden'
         }}

@@ -1,4 +1,5 @@
 import "./TechnologyCard.css";
+import { Link } from "react-router-dom";
 import TechnologyNotes from "./TechnologyNotes.jsx";
 
 const TechnologyCard = ({
@@ -42,10 +43,7 @@ const TechnologyCard = ({
 
       <p className="technology-card__description">{description}</p>
 
-      <TechnologyNotes
-        notes={notes}
-        onNotesChange={handleNotesChange}
-      />
+      <TechnologyNotes notes={notes} onNotesChange={handleNotesChange} />
 
       <div className="technology-card__footer">
         <span
@@ -56,6 +54,9 @@ const TechnologyCard = ({
         <span className="technology-card__hint">
           * Нажмите для изменения статуса
         </span>
+        <Link to={`/technology/${id}`} className="btn-link">
+          Подробнее →
+        </Link>
       </div>
     </div>
   );

@@ -1,38 +1,41 @@
-import useLocalStorage from './useLocalStorage';
+import useLocalStorage from "./useLocalStorage";
 
 const initialTechnologies = [
   {
     id: 1,
-    title: 'React Components',
-    description: 'Изучение базовых компонентов и их жизненного цикла',
-    status: 'completed',
-    notes: '',
-    category: 'React Basics'
+    title: "React Components",
+    description: "Изучение базовых компонентов и их жизненного цикла",
+    status: "completed",
+    notes: "",
+    category: "React Basics",
   },
   {
     id: 2,
-    title: 'JSX Syntax',
-    description: 'Освоение синтаксиса JSX и правил написания',
-    status: 'in-progress',
-    notes: '',
-    category: 'React Basics'
+    title: "JSX Syntax",
+    description: "Освоение синтаксиса JSX и правил написания",
+    status: "in-progress",
+    notes: "",
+    category: "React Basics",
   },
   {
     id: 3,
-    title: 'State Management',
-    description: 'Работа с состоянием компонентов через useState',
-    status: 'not-started',
-    notes: '',
-    category: 'Hooks'
-  }
+    title: "State Management",
+    description: "Работа с состоянием компонентов через useState",
+    status: "not-started",
+    notes: "",
+    category: "Hooks",
+  },
 ];
 
 function useTechnologies() {
-  const [technologies, setTechnologies] = useLocalStorage('technologies', initialTechnologies);
+  const [technologies, setTechnologies] = useLocalStorage(
+    "technologies",
+    initialTechnologies
+  );
 
   const updateStatus = (techId) => {
-    setTechnologies(prev =>
-      prev.map(tech => {
+    setTechnologies((prev) =>
+      prev.map((tech) => {
         if (tech.id === techId) {
           let nextStatus = "not-started";
           switch (tech.status) {
@@ -53,9 +56,15 @@ function useTechnologies() {
     );
   };
 
+  const addTechnology = (technology) => {
+    setTechnologies((prev) => {
+      return [ ...prev, technology ];
+    });
+  };
+
   const updateNotes = (techId, newNotes) => {
-    setTechnologies(prev =>
-      prev.map(tech =>
+    setTechnologies((prev) =>
+      prev.map((tech) =>
         tech.id === techId ? { ...tech, notes: newNotes } : tech
       )
     );
@@ -63,19 +72,21 @@ function useTechnologies() {
 
   const calculateProgress = () => {
     if (technologies.length === 0) return 0;
-    const completed = technologies.filter(tech => tech.status === 'completed').length;
+    const completed = technologies.filter(
+      (tech) => tech.status === "completed"
+    ).length;
     return Math.round((completed / technologies.length) * 100);
   };
 
   const markAllAsCompleted = () => {
-    setTechnologies(prev =>
-      prev.map(tech => ({ ...tech, status: 'completed' }))
+    setTechnologies((prev) =>
+      prev.map((tech) => ({ ...tech, status: "completed" }))
     );
   };
 
   const resetAllStatuses = () => {
-    setTechnologies(prev =>
-      prev.map(tech => ({ ...tech, status: 'not-started' }))
+    setTechnologies((prev) =>
+      prev.map((tech) => ({ ...tech, status: "not-started" }))
     );
   };
 
@@ -85,7 +96,8 @@ function useTechnologies() {
     updateNotes,
     markAllAsCompleted,
     resetAllStatuses,
-    progress: calculateProgress()
+    progress: calculateProgress(),
+    addTechnology
   };
 }
 

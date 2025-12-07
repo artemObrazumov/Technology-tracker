@@ -1,100 +1,47 @@
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
-import TechnologyCard from "./components/TechnologyCard";
-import ProgressHeader from "./components/ProgressHeader";
-import QuickActions from "./components/QuickActions";
-import FilterTabs from "./components/FilterTabs";
-import ProgressBar from "./components/ProgressBar";
-import useTechnologies from "./hooks/useTechnologies";
+import "./DarkTheme.css";
+import Navigation from "./components/Navigation";
+import Home from "./pages/Home";
+import TechnologyList from "./pages/TechnologyList";
+import TechnologyDetail from "./pages/TechnologyDetail";
+import AddTechnology from "./pages/AddTechnology";
+import Login from './pages/Login';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import Statistics from './pages/Statistics';
+import ProtectedRoute from './components/ProtectedRoute';
+import useAuth from './hooks/useAuth';
 
 function App() {
-  const { 
-    technologies, 
-    updateStatus, 
-    updateNotes, 
-    markAllAsCompleted, 
-    resetAllStatuses, 
-    progress 
-  } = useTechnologies();
-
-  const [activeFilter, setActiveFilter] = useState("all");
-
-  const pickRandomTechnology = () => {
-    const notStartedTechnologies = technologies.filter(
-      (tech) => tech.status === "not-started"
-    );
-    if (notStartedTechnologies.length === 0) {
-      return;
-    }
-    const randomTechnology =
-      notStartedTechnologies[
-        Math.floor(Math.random() * notStartedTechnologies.length)
-      ];
-    updateStatus(randomTechnology.id);
-  };
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const filteredTechnologies = technologies.filter((tech) => {
-    const matchesFilter =
-      activeFilter === "all" || tech.status === activeFilter;
-    const matchesSearch =
-      searchQuery === "" ||
-      tech.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tech.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tech.notes.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return matchesFilter && matchesSearch;
-  });
+  const { isLoggedIn, user, login, logout } = useAuth();
 
   return (
-    <div className="app">
-      <div className="app-container">
-        <ProgressHeader technologies={technologies} />
+    <Router>
+      <div className="app">
+        <Navigation isLoggedIn={isLoggedIn} user={user} onLogout={logout} />
 
-        <ProgressBar progress={progress}/>
-
-        <QuickActions
-          onMarkAllCompleted={markAllAsCompleted}
-          onResetAll={resetAllStatuses}
-          onPickRandom={pickRandomTechnology}
-          technologies={technologies}
-        />
-
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="Поиск технологий по названию, описанию или заметкам..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-          <span className="search-count">
-            Найдено: {filteredTechnologies.length}
-          </span>
-        </div>
-
-        <FilterTabs
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          technologies={technologies}
-        />
-
-        <div className="technologies-grid">
-          {filteredTechnologies.map((technology) => (
-            <TechnologyCard
-              key={technology.id}
-              id={technology.id}
-              title={technology.title}
-              description={technology.description}
-              status={technology.status}
-              onStatusChange={updateStatus}
-              notes={technology.notes}
-              onNotesChange={updateNotes}
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/technologies" element={<TechnologyList />} />
+            <Route path="/technology/:techId" element={<TechnologyDetail />} />
+            <Route path="/add-technology" element={<AddTechnology />} />
+            <Route path="/login" element={<Login onLogin={login} />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute isLoggedIn={isLoggedIn}>
+                  <Profile user={user} onLogout={logout} />
+                </ProtectedRoute>
+              }
             />
-          ))}
-        </div>
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/statistic" element={<Statistics />} />
+          </Routes>
+        </main>
       </div>
-    </div>
+    </Router>
   );
 }
 
