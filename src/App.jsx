@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Statistics from './pages/Statistics';
+import Articles from './pages/Articles';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAuth from './hooks/useAuth';
 
@@ -38,6 +39,7 @@ function App() {
             />
             <Route path="/settings" element={<Settings />} />
             <Route path="/statistic" element={<Statistics />} />
+            <Route path="/articles" element={<Articles />} />
           </Routes>
         </main>
       </div>

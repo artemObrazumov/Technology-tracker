@@ -48,6 +48,14 @@ function Navigation({ isLoggedIn, user, onLogout }) {
             Настройки
           </Link>
         </li>
+        <li>
+          <Link
+            to="/articles"
+            className={location.pathname === "/articles" ? "active" : ""}
+          >
+            Новости
+          </Link>
+        </li>
         <li className="user-menu">
           {isLoggedIn ? (
             <div className="user-info">
