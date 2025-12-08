@@ -56,9 +56,22 @@ function useTechnologies() {
     );
   };
 
+  const batchUpdateStatuses = (ids, newStatus) => {
+    setTechnologies((prev) => {
+      const idsSet = new Set(ids);
+      return prev.map((tech) => {
+        if (idsSet.has(tech.id)) {
+          return { ...tech, status: newStatus };
+        }
+        return tech;
+      });
+    });
+    return Promise.resolve();
+  };
+
   const addTechnology = (technology) => {
     setTechnologies((prev) => {
-      return [ ...prev, technology ];
+      return [...prev, technology];
     });
   };
 
@@ -97,7 +110,8 @@ function useTechnologies() {
     markAllAsCompleted,
     resetAllStatuses,
     progress: calculateProgress(),
-    addTechnology
+    addTechnology,
+    batchUpdateStatuses,
   };
 }
 
