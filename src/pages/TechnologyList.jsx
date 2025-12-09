@@ -10,6 +10,7 @@ import useTechnologies from "../hooks/useTechnologies";
 function TechnologyList() {
   const {
     technologies,
+    setTechnologies,
     updateStatus,
     updateNotes,
     updateDeadlines,
@@ -17,7 +18,6 @@ function TechnologyList() {
     resetAllStatuses,
     progress,
     batchUpdateStatuses,
-    getDeadlineInfo,
   } = useTechnologies();
 
   const [activeFilter, setActiveFilter] = useState("all");
@@ -27,8 +27,6 @@ function TechnologyList() {
   const [batchStatus, setBatchStatus] = useState("in-progress");
   const [showBatchEditor, setShowBatchEditor] = useState(false);
   const [showDeadlineForm, setShowDeadlineForm] = useState(false);
-
-  const deadlineInfo = getDeadlineInfo();
 
   const handleBatchSubmit = async (e) => {
     e.preventDefault();
@@ -67,6 +65,10 @@ function TechnologyList() {
     );
   };
 
+  const handleImportData = (importedTechnologies) => {
+    setTechnologies(importedTechnologies);
+  };
+
   const filteredTechnologies = technologies.filter((tech) => {
     const matchesFilter =
       activeFilter === "all" || tech.status === activeFilter;
@@ -89,6 +91,7 @@ function TechnologyList() {
         onResetAll={resetAllStatuses}
         onPickRandom={pickRandomTechnology}
         technologies={technologies}
+        onImportData={handleImportData}
       />
 
       <div className="additional-actions">

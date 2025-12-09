@@ -151,6 +151,7 @@ function useTechnologies() {
 
   return {
     technologies,
+    setTechnologies,
     updateStatus,
     updateNotes,
     updateDeadlines,

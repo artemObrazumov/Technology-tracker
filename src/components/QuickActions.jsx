@@ -1,9 +1,18 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Modal from './Modal';
 import './QuickActions.css';
 
-function QuickActions({ onMarkAllCompleted, onResetAll, onPickRandom, technologies }) {
+function QuickActions({ 
+  onMarkAllCompleted, 
+  onResetAll, 
+  onPickRandom, 
+  technologies,
+  onImportData
+}) {
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importStatus, setImportStatus] = useState({ success: false, message: '', count: 0 });
+  const fileInputRef = useRef(null);
 
   const handleExport = () => {
     const data = {
@@ -11,7 +20,6 @@ function QuickActions({ onMarkAllCompleted, onResetAll, onPickRandom, technologi
       technologies: technologies
     };
     const dataStr = JSON.stringify(data, null, 2);
-    console.log('Данные для экспорта: ', dataStr);
     
     const blob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -24,6 +32,74 @@ function QuickActions({ onMarkAllCompleted, onResetAll, onPickRandom, technologi
     URL.revokeObjectURL(url);
     
     setShowExportModal(true);
+  };
+
+  const handleImport = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      try {
+        const importedData = JSON.parse(e.target.result);
+        
+        if (!importedData.technologies || !Array.isArray(importedData.technologies)) {
+          throw new Error('Неверный формат файла. Ожидается массив technologies.');
+        }
+
+        const isValidData = importedData.technologies.every(tech => 
+          tech && typeof tech === 'object' && 'title' in tech
+        );
+
+        if (!isValidData) {
+          throw new Error('Некорректная структура данных в файле.');
+        }
+
+        if (onImportData) {
+          onImportData(importedData.technologies);
+        }
+
+        setImportStatus({
+          success: true,
+          message: 'Данные успешно импортированы',
+          count: importedData.technologies.length
+        });
+        
+      } catch (error) {
+        setImportStatus({
+          success: false,
+          message: error.message || 'Ошибка при импорте файла',
+          count: 0
+        });
+      } finally {
+        setShowImportModal(true);
+        event.target.value = '';
+      }
+    };
+
+    reader.onerror = () => {
+      setImportStatus({
+        success: false,
+        message: 'Ошибка чтения файла',
+        count: 0
+      });
+      setShowImportModal(true);
+      event.target.value = '';
+    };
+
+    reader.readAsText(file);
+  };
+
+  const handleCloseImportModal = () => {
+    setShowImportModal(false);
+    setImportStatus({ success: false, message: '', count: 0 });
   };
 
   return (
@@ -54,7 +130,21 @@ function QuickActions({ onMarkAllCompleted, onResetAll, onPickRandom, technologi
         >
           Экспорт
         </button>
+        <button 
+          className="quick-action-btn quick-action-btn--import"
+          onClick={handleImport}
+        >
+          Импорт
+        </button>
       </div>
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept=".json"
+        onChange={handleFileSelect}
+        style={{ display: 'none' }}
+      />
 
       <Modal
         isOpen={showExportModal}
@@ -69,6 +159,37 @@ function QuickActions({ onMarkAllCompleted, onResetAll, onPickRandom, technologi
           >
             Закрыть
           </button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={showImportModal}
+        onClose={handleCloseImportModal}
+        title="Импорт данных"
+      >
+        <div className="import-modal-content">
+          {importStatus.success ? (
+            <>
+              <p className="import-success">{importStatus.message}</p>
+              <button 
+                onClick={handleCloseImportModal}
+                className="quick-action-btn quick-action-btn--success"
+              >
+                Продолжить
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="import-error">{importStatus.message}</p>
+              <p>Убедитесь, что файл соответствует формату экспорта этого приложения.</p>
+              <button 
+                onClick={handleCloseImportModal}
+                className="quick-action-btn quick-action-btn--error"
+              >
+                Закрыть
+              </button>
+            </>
+          )}
         </div>
       </Modal>
     </div>
