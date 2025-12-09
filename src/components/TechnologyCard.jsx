@@ -7,6 +7,7 @@ const TechnologyCard = ({
   title,
   description,
   status,
+  deadline,
   onStatusChange,
   notes,
   onNotesChange,
@@ -18,6 +19,21 @@ const TechnologyCard = ({
   const handleNotesChange = (e) => {
     onNotesChange(id, e.target.value);
   };
+
+  const formatDeadline = (deadlineString) => {
+    if (!deadlineString) return null;
+
+    const date = new Date(deadlineString);
+    if (isNaN(date.getTime())) return null;
+
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`;
+  };
+
+  const formattedDeadline = formatDeadline(deadline);
 
   const getStatusText = () => {
     switch (status) {
@@ -39,6 +55,9 @@ const TechnologyCard = ({
     >
       <div className="technology-card__header">
         <h3 className="technology-card__title">{title}</h3>
+        {formattedDeadline && (
+          <div className="deadline-date">Дедлайн: {formattedDeadline}</div>
+        )}
       </div>
 
       <p className="technology-card__description">{description}</p>

@@ -103,8 +103,16 @@
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .btn-link {
     align-self: flex-end;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .technologies-checkbox-list {
+    max-height: 200px;
   }
 }

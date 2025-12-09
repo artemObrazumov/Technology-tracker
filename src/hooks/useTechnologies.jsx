@@ -8,6 +8,7 @@ const initialTechnologies = [
     status: "completed",
     notes: "",
     category: "React Basics",
+    deadline: "",
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ const initialTechnologies = [
     status: "in-progress",
     notes: "",
     category: "React Basics",
+    deadline: "",
   },
   {
     id: 3,
@@ -24,6 +26,7 @@ const initialTechnologies = [
     status: "not-started",
     notes: "",
     category: "Hooks",
+    deadline: "",
   },
 ];
 
@@ -56,6 +59,20 @@ function useTechnologies() {
     );
   };
 
+  const updateDeadlines = (deadlines) => {
+    setTechnologies((prev) => {
+      const deadlineMap = new Map();
+      deadlines.forEach(d => deadlineMap.set(d.id, d.deadline));
+      
+      return prev.map(tech => {
+        const newDeadline = deadlineMap.get(tech.id);
+        return newDeadline !== undefined 
+          ? { ...tech, deadline: newDeadline }
+          : tech;
+      });
+    });
+  };
+
   const batchUpdateStatuses = (ids, newStatus) => {
     setTechnologies((prev) => {
       const idsSet = new Set(ids);
@@ -71,7 +88,7 @@ function useTechnologies() {
 
   const addTechnology = (technology) => {
     setTechnologies((prev) => {
-      return [...prev, technology];
+      return [...prev, { ...technology, deadline: '' }];
     });
   };
 
@@ -103,15 +120,46 @@ function useTechnologies() {
     );
   };
 
+  const getDeadlineInfo = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const overdue = [];
+    const upcoming = [];
+    const noDeadline = [];
+    
+    technologies.forEach(tech => {
+      if (!tech.deadline) {
+        noDeadline.push(tech);
+      } else {
+        const deadlineDate = new Date(tech.deadline);
+        deadlineDate.setHours(0, 0, 0, 0);
+        
+        const diffTime = deadlineDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) {
+          overdue.push({ ...tech, daysOverdue: Math.abs(diffDays) });
+        } else if (diffDays <= 7) {
+          upcoming.push({ ...tech, daysLeft: diffDays });
+        }
+      }
+    });
+    
+    return { overdue, upcoming, noDeadline };
+  };
+
   return {
     technologies,
     updateStatus,
     updateNotes,
+    updateDeadlines,
     markAllAsCompleted,
     resetAllStatuses,
     progress: calculateProgress(),
     addTechnology,
     batchUpdateStatuses,
+    getDeadlineInfo,
   };
 }
 

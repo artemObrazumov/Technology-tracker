@@ -41,14 +41,14 @@ function AddTechnology() {
 
       <form onSubmit={handleSubmit} className="technology-form">
         <div className="form-group">
-          <label htmlFor="title">Название технологии *</label>
+          <label htmlFor="title">Название технологии</label>
           <input
             type="text"
             id="title"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            placeholder="Например: React Hooks, Node.js Express, MongoDB"
+            placeholder="Например: React, Node.js"
             required
           />
         </div>

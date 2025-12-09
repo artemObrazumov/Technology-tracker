@@ -4,6 +4,7 @@ import ProgressHeader from "../components/ProgressHeader";
 import QuickActions from "../components/QuickActions";
 import FilterTabs from "../components/FilterTabs";
 import ProgressBar from "../components/ProgressBar";
+import TechnologyDeadlineForm from "../components/TechnologyDeadlineForm";
 import useTechnologies from "../hooks/useTechnologies";
 
 function TechnologyList() {
@@ -11,10 +12,12 @@ function TechnologyList() {
     technologies,
     updateStatus,
     updateNotes,
+    updateDeadlines,
     markAllAsCompleted,
     resetAllStatuses,
     progress,
     batchUpdateStatuses,
+    getDeadlineInfo,
   } = useTechnologies();
 
   const [activeFilter, setActiveFilter] = useState("all");
@@ -23,6 +26,9 @@ function TechnologyList() {
   const [selectedIds, setSelectedIds] = useState([]);
   const [batchStatus, setBatchStatus] = useState("in-progress");
   const [showBatchEditor, setShowBatchEditor] = useState(false);
+  const [showDeadlineForm, setShowDeadlineForm] = useState(false);
+
+  const deadlineInfo = getDeadlineInfo();
 
   const handleBatchSubmit = async (e) => {
     e.preventDefault();
@@ -51,6 +57,16 @@ function TechnologyList() {
     updateStatus(randomTechnology.id);
   };
 
+  const handleDeadlinesUpdate = (updatedDeadlines) => {
+    updateDeadlines(updatedDeadlines);
+  };
+
+  const clearAllDeadlines = () => {
+    updateDeadlines(
+      technologies.map((tech) => ({ id: tech.id, deadline: "" }))
+    );
+  };
+
   const filteredTechnologies = technologies.filter((tech) => {
     const matchesFilter =
       activeFilter === "all" || tech.status === activeFilter;
@@ -75,7 +91,7 @@ function TechnologyList() {
         technologies={technologies}
       />
 
-      <div className="batch-editor-toggle">
+      <div className="additional-actions">
         <button
           type="button"
           onClick={() => setShowBatchEditor(!showBatchEditor)}
@@ -84,7 +100,24 @@ function TechnologyList() {
         >
           {showBatchEditor ? "Скрыть" : "Массовое редактирование статусов"}
         </button>
+
+        <button
+          type="button"
+          onClick={() => setShowDeadlineForm(!showDeadlineForm)}
+          className="btn-deadline-toggle"
+          aria-expanded={showDeadlineForm}
+        >
+          {showDeadlineForm ? "Скрыть" : "Установка сроков изучения"}
+        </button>
       </div>
+
+      {showDeadlineForm && (
+        <TechnologyDeadlineForm
+          technologies={technologies}
+          onDeadlinesUpdate={handleDeadlinesUpdate}
+          onClearAll={clearAllDeadlines}
+        />
+      )}
 
       {showBatchEditor && (
         <div className="batch-editor">
@@ -169,19 +202,76 @@ function TechnologyList() {
             title={technology.title}
             description={technology.description}
             status={technology.status}
+            deadline={technology.deadline}
             onStatusChange={updateStatus}
             notes={technology.notes}
             onNotesChange={updateNotes}
-            isSelected={selectedIds.includes(technology.id)}
-            onSelectChange={() => handleCheckboxChange(technology.id)}
           />
         ))}
       </div>
 
       <style jsx="true">{`
-        .batch-editor-toggle {
-          margin: 24px 0;
+        .deadline-summary {
+          display: flex;
+          gap: 20px;
+          margin: 20px 0;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        .summary-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 16px 24px;
+          border-radius: 12px;
+          min-width: 120px;
+          background: white;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-item.overdue {
+          border-left: 4px solid #dc2626;
+        }
+
+        .summary-item.upcoming {
+          border-left: 4px solid #f59e0b;
+        }
+
+        .summary-item.no-deadline {
+          border-left: 4px solid #6b7280;
+        }
+
+        .summary-count {
+          font-size: 1.75rem;
+          font-weight: 700;
+          margin-bottom: 4px;
+        }
+
+        .summary-item.overdue .summary-count {
+          color: #dc2626;
+        }
+
+        .summary-item.upcoming .summary-count {
+          color: #f59e0b;
+        }
+
+        .summary-item.no-deadline .summary-count {
+          color: #6b7280;
+        }
+
+        .summary-label {
+          font-size: 0.875rem;
+          color: #4b5563;
           text-align: center;
+        }
+
+        .additional-actions {
+          display: flex;
+          gap: 16px;
+          margin: 24px 0;
+          justify-content: center;
+          flex-wrap: wrap;
         }
 
         .btn-batch-toggle {
@@ -197,6 +287,29 @@ function TechnologyList() {
 
         .btn-batch-toggle:hover {
           background: #4b5563;
+        }
+
+        .btn-deadline-toggle {
+          background: #3b82f6;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.3s;
+        }
+
+        .btn-deadline-toggle:hover {
+          background: #2563eb;
+        }
+
+        .deadline-form-section {
+          margin: 24px 0;
+          background: white;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
 
         .batch-editor {
@@ -342,6 +455,20 @@ function TechnologyList() {
         }
 
         @media (max-width: 768px) {
+          .deadline-summary {
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .summary-item {
+            width: 100%;
+            max-width: 280px;
+          }
+
+          .additional-actions {
+            flex-direction: column;
+          }
+
           .form-actions {
             flex-direction: column;
           }
