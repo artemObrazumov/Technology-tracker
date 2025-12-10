@@ -17,7 +17,9 @@ body.dark-theme .progress-percentage,
 body.dark-theme label,
 body.dark-theme .filter-tab__label,
 body.dark-theme .technology-card__description,
-body.dark-theme .logout-btn {
+body.dark-theme .logout-btn,
+body.dark-theme .article-content,
+body.dark-theme .article-date {
   color: #fff;
 }
 
@@ -31,7 +33,8 @@ body.dark-theme .progress-bar-outer,
 body.dark-theme .quick-actions,
 body.dark-theme .search-box,
 body.dark-theme .filter-tabs,
-body.dark-theme .notes-section {
+body.dark-theme .notes-section,
+body.dark-theme .article-card {
   background: #600063;
 }
 
